@@ -24,8 +24,7 @@ document which aims to describe the hardware system selected to implement that S
 | **3**  | Telescope Mount Assembly to Interlock System Interface Control Document” | LTS-173            |             |
 | **4**  | TMA Safety Hazard Analysis 24-04-2013                                    | 14428              | V2          |
 | **5**  | TMA IS Equipment General Description                                     | 3151_MCS_0008      | V3.12       |
-| **6**  | TMA IS IO HW List                                                        | 3151_MCS_0017      | V2.8        |
-| **7**  | TMA Electrical drawing                                                   | 3151_MCS_0022      | V9          |
+| **6**  | TMA Electrical drawing                                                   | 3151_MCS_0022      | V9          |
 
 ## HW Design
 
@@ -70,8 +69,8 @@ with a different performance level:
 | Technology    | Channels  | Safety ratting   |
 |---------------|-----------|------------------|
 | Relay         | 1-channel | PL c Cat 1       |
-| Semiconductor | 2-channel | PL e Cat 4 SIL 3 |
-|               | 1-channel | PL d Cat 2 SIL 2 |
+|               | 2-channel | PL e Cat 4 SIL 3 |
+| Semiconductor | 1-channel | PL d Cat 2 SIL 2 |
 |               | 2-channel | PL e Cat 4 SIL 3 |
 
 As the design criteria is to provide at least a performance level of PL d, if the device is a single channel a
@@ -146,18 +145,13 @@ The safety system configuration is:
 - Decentralized I/O in TMA-PI-CS-CBT-0101
 
 As mentioned, communication between the Safety CPU and the remote I/Os is done through the SafetyNet p in a star network
-using a switch. In this case instead of a Cisco switch a Moxa switch is used, as the Cisco one is not certified for
-SafetyNetwork and the temperature range for operation is only 0-60 °C.
+using a switch. In this case a safetyNet certified Moxa switch with extended temperature range is used.
 
 ### Safety CPU in TMA-AZ-CS-CBT-0001
 
 The TMA IS CPU is located in the main cabinet in the Azimuth platform, cabinet TMA-AZ-CS-CBT-0001.
 
-The master unit has two RJ45 ports, because it has and internal switch to chain components, they can be configured as
-normal Ethernet port or SafetyNet p port. In this case as it is more appropriate to build a star configuration, only
-one is used to connect to the remote I/Os using the Moxa switch, this port is configured as SafetyNet p, and the other
-as a normal Ethernet port to connect to the PXI through a ModBus protocol, this connection does not need to be a safety
-connection.
+The master unit has two RJ45 ports and both ports have the same configuration since it is an internal switch. In this case, a star configuration is used so one is used to connect to the remote I/Os using the Moxa switch. The other port is used to connect to the control system using MODBUS protocol.
 
 The signals wired to the Safety CPU module inside this cabinet can be found in the latest version of the
 [Electrical Schematics](https://gitlab.tekniker.es/publico/3151-lsst/documentation/electricalschematics).
@@ -190,14 +184,9 @@ The decentralized I/O is located in an auxiliary cabinet below the TMA in level 
 The signals wired to the remote I/O module inside this cabinet can be found in the latest version of the
 [Electrical Schematics](https://gitlab.tekniker.es/publico/3151-lsst/documentation/electricalschematics).
 
-> As a rule, all I/O should be FS modules, but in this cabinet there is an exception, the counter module for the Azimuth
-> encoder cannot be a FS module, as this module can ONLY be connected to a CPU module. That's why, a standard non FS
-> module is used, to avoid the need of routing the Azimuth encoder wire all the way up to the Azimuth platform, to
-> wire it to the safety CPU inside the TMA-AZ-CS_CBT-0001 cabinet.
-
 ## Safety Network
 
-As mentioned before, for the safety network specific switches must be used, in this case the MOXA EDS-408A-MM-SC. For
+As mentioned before, for the safety network SafetyNET certified switches must be used, in this case the MOXA EDS-408A-MM-SC. For
 accomplishing the designed architecture, 2 switches have been installed, one in the TMA-AZ-CS-CBT-0001 cabinet and another
 in the TMA-PI-CS-CBT-0101 cabinet. Giving the following connection scheme:
 
@@ -498,10 +487,10 @@ These are the variables published by the PXI. The address 0 refers to 4x0000.
 The code inside the Safety CPU is defined to meet the relations defined in the safety matrix. For doing this there are
 3 main actions done inside the Safety CPU in the following order:
 
-1. Read the input variables from all the modules, both the ones wired to the Safety CPU and the Distributed I/O modules
+1. Read the input values from all the modules, both the ones wired to the Safety CPU and the Distributed I/O modules
   and the ones that reach to the Safety CPU over modbus from the PXI.
 2. Apply the matrix to the read values to generate to corresponding response in each case.
-3. Send the output variables generated after the matrix execution to both the output modules wired to the Safety CPU and
+3. Send the output values generated after the matrix execution to both the output modules wired to the Safety CPU and
    the Distributed I/O modules and the ones the Safety CPU sends over modbus to the PXI.
 
 ### Tasks and priorities
@@ -564,33 +553,32 @@ must be implemented by the developer. The implemented solutions for these cases 
 - **S**: a flip-flop SR is used to *set* the condition and for the *reset* the value provided by the user is used.
 
   ```bash
-    **SR_ELLIMP**(
-    **SET1** := glimswitch.**sdiLIMELPOS**,
-    **RESET** := gack.**ackELlimP**,
-    **Q1** =\> gcausesstore.**ELlimP**
+    SR_ELLIMP(
+    SET1 := glimswitch.sdiLIMELPOS,
+    RESET := gack.ackELlimP,
+    Q1 => gcausesstore.ELlimP
     );
   ```
 
   > Note that two variables are used `gcausesstore.*`, as an intermediate value that can be latched or overriden, and the
   > one from the matrix `gcauses.*`, that is directly the value from the matrix.
 
-- **V**: for the override the TP timer function is used, it gives a pulse of a determined duration, in addition the state
-  of the override variable is added to stop the pulse if the override is removed.
+- **V**: for the override the TON timer function is used, it gives a pulse of a determined duration. The override will be active if the override command is true and the the maximun time is not reached. This way, the override is only available for a defined time and it will restart again when the override command is set to false.
 
   ```bash
-    **TP_OVRELlimP**(
-    **IN** := govread.**ovrELlimP**,
-    **PT** := **TIME_PULSEOVR**,
-    **Q** =\> **temp_ovrELlimP**
-    );
-
-    govr.**ovrELlimP** := govread.**ovrELlimP** **AND** **temp_ovrELlimP**;
+    TON_OVRAZlimP(
+		IN := govread.ovrAZlimP,
+		PT := TIME_PULSEOVR,
+		Q => temp_ovrAZlimP
+	);
+	
+	govr.ovrAZlimP := govread.ovrAZlimP AND (NOT temp_ovrAZlimP);
   ```
 
 - **R**: is a combination of the previous two. A flip-flop SR for the store and a timer TP for the override.
 
   ```bash
-  gcauses.**ELlimP** := gcausesstore.**ELlimP** **AND** **NOT** govr.**ovrELlimP**;
+  gcauses.ELlimP := gcausesstore.ELlimP AND NOT govr.ovrELlimP;
   ```
 
 ### Over speed detection

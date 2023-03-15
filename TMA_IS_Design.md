@@ -151,7 +151,9 @@ using a switch. In this case a safetyNet certified Moxa switch with extended tem
 
 The TMA IS CPU is located in the main cabinet in the Azimuth platform, cabinet TMA-AZ-CS-CBT-0001.
 
-The master unit has two RJ45 ports and both ports have the same configuration since it is an internal switch. In this case, a star configuration is used so one is used to connect to the remote I/Os using the Moxa switch. The other port is used to connect to the control system using MODBUS protocol.
+The master unit has two RJ45 ports and both ports have the same configuration since it is an internal switch. In this
+case, a star configuration is used so one is used to connect to the remote I/Os using the Moxa switch. The other port is
+used to connect to the control system using MODBUS protocol.
 
 The signals wired to the Safety CPU module inside this cabinet can be found in the latest version of the
 [Electrical Schematics](https://gitlab.tekniker.es/publico/3151-lsst/documentation/electricalschematics).
@@ -563,16 +565,18 @@ must be implemented by the developer. The implemented solutions for these cases 
   > Note that two variables are used `gcausesstore.*`, as an intermediate value that can be latched or overriden, and the
   > one from the matrix `gcauses.*`, that is directly the value from the matrix.
 
-- **V**: for the override the TON timer function is used, it gives a pulse of a determined duration. The override will be active if the override command is true and the the maximun time is not reached. This way, the override is only available for a defined time and it will restart again when the override command is set to false.
+- **V**: for the override the TON timer function is used, it gives a pulse of a determined duration. The override will
+  be active if the override command is true and the the maximum time is not reached. This way, the override is only
+  available for a defined time and it will restart again when the override command is set to false.
 
   ```bash
     TON_OVRAZlimP(
-		IN := govread.ovrAZlimP,
-		PT := TIME_PULSEOVR,
-		Q => temp_ovrAZlimP
-	);
-	
-	govr.ovrAZlimP := govread.ovrAZlimP AND (NOT temp_ovrAZlimP);
+    IN := govread.ovrAZlimP,
+    PT := TIME_PULSEOVR,
+    Q => temp_ovrAZlimP
+  );
+
+  govr.ovrAZlimP := govread.ovrAZlimP AND (NOT temp_ovrAZlimP);
   ```
 
 - **R**: is a combination of the previous two. A flip-flop SR for the store and a timer TP for the override.

@@ -76,7 +76,7 @@ with a different performance level:
 As the design criteria is to provide at least a performance level of PL d, if the device is a single channel a
 semiconductor output is used and when dry contact is necessary, a relay output with two channel is used. The selected
 devices are listed in the
-[TMA IS Equipment General Description](https://gitlab.tekniker.es/publico/3151-lsst/documentation/tma_is_equipment_general_description)
+[TMA IS Equipment General Description](https://github.com/lsst-ts/ts_tma_tma-documentation_tma-is_tma-is-equipment-general-description)
 document.
 
 ### PSS4000 Advantages
@@ -156,35 +156,35 @@ case, a star configuration is used so one is used to connect to the remote I/Os 
 used to connect to the control system using MODBUS protocol.
 
 The signals wired to the Safety CPU module inside this cabinet can be found in the latest version of the
-[Electrical Schematics](https://gitlab.tekniker.es/publico/3151-lsst/documentation/electricalschematics).
+[Electrical Schematics](https://github.com/lsst-ts/ts_tma_tma-documentation_electrical-schematics).
 
 ### Decentralized I/Os in TMA-AZ-CS-CBT-0101
 
 The decentralized I/O is located in an auxiliary cabinet in the opposite side of the Azimuth platform, TMA-AZ-CS-CBT-0101.
 
 The signals wired to the remote I/O module inside this cabinet can be found in the latest version of the
-[Electrical Schematics](https://gitlab.tekniker.es/publico/3151-lsst/documentation/electricalschematics).
+[Electrical Schematics](https://github.com/lsst-ts/ts_tma_tma-documentation_electrical-schematics).
 
 ### Decentralized I/Os in TMA-EL-CS-CBT-0101
 
 The decentralized I/O is located in an auxiliary cabinet inside the elevation central section (CST), TMA-EL-CS-CBT-0101.
 
 The signals wired to the remote I/O module inside this cabinet can be found in the latest version of the
-[Electrical Schematics](https://gitlab.tekniker.es/publico/3151-lsst/documentation/electricalschematics).
+[Electrical Schematics](https://github.com/lsst-ts/ts_tma_tma-documentation_electrical-schematics).
 
 ### Decentralized I/Os in TMA-EL-CS-CBT-0102
 
 The decentralized I/O is located in an auxiliary cabinet inside the elevation central section (CST), TMA-EL-CS-CBT-0102.
 
 The signals wired to the remote I/O module inside this cabinet can be found in the latest version of the
-[Electrical Schematics](https://gitlab.tekniker.es/publico/3151-lsst/documentation/electricalschematics).
+[Electrical Schematics](https://github.com/lsst-ts/ts_tma_tma-documentation_electrical-schematics).
 
 ### Decentralized I/Os in TMA-PI-CS-CBT-0101
 
 The decentralized I/O is located in an auxiliary cabinet below the TMA in level 6, TMA-PI-CS-CBT-0101.
 
 The signals wired to the remote I/O module inside this cabinet can be found in the latest version of the
-[Electrical Schematics](https://gitlab.tekniker.es/publico/3151-lsst/documentation/electricalschematics).
+[Electrical Schematics](https://github.com/lsst-ts/ts_tma_tma-documentation_electrical-schematics).
 
 ## Safety Network
 

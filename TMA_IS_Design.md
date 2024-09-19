@@ -100,7 +100,7 @@ In order to simplify and reduce wiring, the configuration selected for the safet
 the control system, that is, a CPU located in the main cabinet and I/O distributed modules in different TMA electrical
 cabinets.
 
-```plantuml
+```{uml}
 @startuml
 node cpu [
   **Safety CPU**
@@ -192,7 +192,7 @@ As mentioned before, for the safety network SafetyNET certified switches must be
 accomplishing the designed architecture, 2 switches have been installed, one in the TMA-AZ-CS-CBT-0001 cabinet and another
 in the TMA-PI-CS-CBT-0101 cabinet. Giving the following connection scheme:
 
-```plantuml
+```{uml}
 @startuml
 node "Switch in AZ-0001" {
   portout az_1
@@ -674,7 +674,7 @@ FS_AnalogueInputSingle configuration for a 4-20 mA input type:
 With the defined values listed above, the obtained read value is directly the mA sent by the sensor times 100 (mA*100),
 therefore having a 250 bar sensor the relation is:
 
-```plantuml
+```{uml}
 @startmath
 Pressure = ((250-0)/(20-4))*(ReadValue/100)
 @endmath
